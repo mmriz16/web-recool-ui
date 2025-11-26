@@ -5,7 +5,7 @@ import { BellIcon } from "lucide-react";
 
 export default function Navbar() {
   return (
-    <div className="text-foreground px-6 py-3.5 flex justify-between items-center bg-white rounded-xl border-b-[1px] border-black/10">
+    <div className="text-foreground px-6 py-3.5 flex justify-between items-center bg-white rounded-xl border-b border-black/10">
       <div className="flex items-center space-x-[10px]">
         <Image src="../svg/logo.svg" alt="Recool UI" width={42} height={42} />
         <div className="flex flex-col space-x-4">
