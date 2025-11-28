@@ -3,13 +3,26 @@
 import { BookmarkIcon } from "lucide-react";
 import ColorCode from "../ui/color-code";
 import Modal from "@/components/ui/modal";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { usePaletteContext } from "../context/palette-context";
+import { generatePalette, getBaseStopIndex } from "@/utils/generatePalette";
 
 export default function Pallete() {
-    const [open, setOpen] = useState(false);
     const [openContrastGrid, setOpenContrastGrid] = useState(false);
     const [openExportCode, setOpenExportCode] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
+    const { baseHex, hueShift, saturationBoost } = usePaletteContext();
+
+    const palette = useMemo(
+        () => generatePalette(baseHex, hueShift, saturationBoost),
+        [baseHex, hueShift, saturationBoost],
+    );
+    const baseStopIndex = useMemo(
+        () => getBaseStopIndex(baseHex),
+        [baseHex],
+    );
+
+    const stops = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"];
 
     return (
         <div className="flex flex-col space-y-4 h-full justify-between">
@@ -26,23 +39,31 @@ export default function Pallete() {
             </div>
 
             <div className="flex flex-row rounded-2xl overflow-hidden">
-                <ColorCode />
-                <ColorCode />
-                <ColorCode />
-                <ColorCode />
-                <ColorCode />
-                <ColorCode />
-                <ColorCode />
-                <ColorCode />
-                <ColorCode />
-                <ColorCode />
-                <ColorCode />
-                <ColorCode />
+                {stops.map((stop, index) => {
+                    const swatchHex = (palette[index] ?? baseHex).toUpperCase();
+                    const isBase = index === baseStopIndex;
+                    return (
+                        <ColorCode
+                            key={stop}
+                            label={stop}
+                            hex={swatchHex}
+                            isBase={isBase}
+                        />
+                    );
+                })}
             </div>
 
             <Modal open={openContrastGrid} onClose={() => setOpenContrastGrid(false)}>
                 <h2 className="font-semibold text-xl">Contrast Grid</h2>
                 <p className="text-sm">This is the contrast grid for the pallete.</p>
+            </Modal>
+            <Modal open={openExportCode} onClose={() => setOpenExportCode(false)}>
+                <h2 className="font-semibold text-xl">Export Palette</h2>
+                <p className="text-sm">Export options will be available soon.</p>
+            </Modal>
+            <Modal open={openEdit} onClose={() => setOpenEdit(false)}>
+                <h2 className="font-semibold text-xl">Edit Palette</h2>
+                <p className="text-sm">Palette editing modal placeholder.</p>
             </Modal>
         </div>
     );

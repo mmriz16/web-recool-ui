@@ -53,3 +53,9 @@ body {
   color: var(--foreground);
   font-family: var(--font-manrope), "Manrope", Arial, Helvetica, sans-serif;
 }
+
+/* React Color ChromePicker Styling */
+.chrome-picker {
+  border-radius: 16px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}

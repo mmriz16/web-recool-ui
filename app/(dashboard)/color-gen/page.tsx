@@ -1,6 +1,6 @@
 import Navbar from "@/components/layout/navbar";
 import Sidemenu from "@/components/layout/sidemenu";
-import Card from "../../../components/ui/card";
+import Card from "@/components/ui/card";
 import Pallete from "@/components/layout/pallete";
 
 export default function ColorGen() {

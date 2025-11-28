@@ -1,17 +1,63 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Slider } from "../ui/slider";
 import { ColorInput } from "../ui/color-input";
+import { usePaletteContext } from "../context/palette-context";
 
 export default function Color() {
-    const [hue, setHue] = useState(0);
-    const [saturation, setSaturation] = useState(0);
-    const [color, setColor] = useState("#191DFA");
+    const {
+        baseHex,
+        setBaseHex,
+        hueShift,
+        setHueShift,
+        saturationBoost,
+        setSaturationBoost,
+    } = usePaletteContext();
+
+    const [inputHex, setInputHex] = useState(baseHex);
+    const [localHue, setLocalHue] = useState(hueShift);
+    const [localSaturation, setLocalSaturation] = useState(saturationBoost);
     const [isDarkMode, setIsDarkMode] = useState(false);
 
     function randomColor() {
         const c = Math.floor(Math.random() * 16777215).toString(16);
-        setColor("#" + c.padStart(6, "0"));
+        const randomHex = `#${c.padStart(6, "0").toUpperCase()}`;
+        setInputHex(randomHex);
+        setBaseHex(randomHex);
     }
+
+    useEffect(() => {
+        setInputHex(baseHex);
+    }, [baseHex]);
+
+    useEffect(() => {
+        setLocalHue(hueShift);
+    }, [hueShift]);
+
+    useEffect(() => {
+        setLocalSaturation(saturationBoost);
+    }, [saturationBoost]);
+
+    useEffect(() => {
+        const debounce = setTimeout(() => {
+            setHueShift(localHue);
+        }, 150);
+
+        return () => clearTimeout(debounce);
+    }, [localHue, setHueShift]);
+
+    useEffect(() => {
+        const debounce = setTimeout(() => {
+            setSaturationBoost(localSaturation);
+        }, 150);
+
+        return () => clearTimeout(debounce);
+    }, [localSaturation, setSaturationBoost]);
+
+    const handleHexChange = (value: string) => {
+        const formatted = formatHexInput(value);
+        setInputHex(formatted);
+        setBaseHex(formatted);
+    };
 
     return (
         <div className="flex flex-col space-y-6 h-full justify-between">
@@ -32,7 +78,12 @@ export default function Color() {
                     </form>
                     <form className="flex flex-col justify-between gap-1.5">
                         <p>Base Color</p>
-                        <ColorInput color={color} onChangeColor={setColor} onRefresh={randomColor} />
+                        <ColorInput
+                            color={inputHex}
+                            onChangeColor={handleHexChange}
+                            onRefresh={randomColor}
+                            enablePicker
+                        />
                     </form>
                     <div className="w-full p-4 rounded-2xl border border-black/10 flex items-center justify-between bg-white">
                         <div>
@@ -55,11 +106,32 @@ export default function Color() {
                 <div className="flex flex-col space-y-2.5 font-medium text-sm">
                     <h1 className="font-medium uppercase text-base">Easing & Adjustments</h1>
                     <form className="flex flex-col justify-between gap-1.5">
-                        <Slider label="Hue Shift" value={hue} onChange={setHue} min={0} max={100} color="#191DFA" />
-                        <Slider label="Saturation Boost" value={saturation} onChange={setSaturation} min={0} max={100} color="#191DFA" />
+                        <Slider
+                            label="Hue Shift"
+                            value={localHue}
+                            onChange={setLocalHue}
+                            min={0}
+                            max={100}
+                            color="#191DFA"
+                        />
+                        <Slider
+                            label="Saturation Boost"
+                            value={localSaturation}
+                            onChange={setLocalSaturation}
+                            min={0}
+                            max={100}
+                            color="#191DFA"
+                        />
                     </form>
                 </div>
             </div>
         </div>
     );
+}
+
+function formatHexInput(value: string) {
+    if (!value) return "#";
+    let sanitized = value.toUpperCase().replace(/[^0-9A-F]/g, "");
+    sanitized = sanitized.slice(0, 6);
+    return `#${sanitized}`;
 }

@@ -112,11 +112,11 @@ function GridContent() {
                             </Card>
                         </section>
                         <section className={`${activeTab === "guide" ? "block" : "hidden"} h-full`}>
-                            <Card>
+                    <Card>
                                 <Guide />
                             </Card>
                         </section>
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>
