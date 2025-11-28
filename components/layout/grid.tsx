@@ -15,8 +15,8 @@ export default function Grid() {
                 <div className="flex flex-col space-y-2.5 font-medium text-sm gap">
                     <form className="flex flex-col justify-between gap-1.5">
                         <p className="font-medium text-sm">Columns</p>
-                        <div className="flex items-center gap-2 w-full p-4 rounded-xl border border-black/10">
-                            <span className="text-sm font-medium whitespace-nowrap">grid-cols-</span>
+                        <div className="flex items-center gap-1 w-full p-4 rounded-xl border border-black/10">
+                            <span className="text-sm font-medium whitespace-nowrap">grid - cols -</span>
                             <input
                                 className="w-full bg-transparent outline-none text-sm font-medium text-gray-800"
                                 type="number"
@@ -29,8 +29,8 @@ export default function Grid() {
                     </form>
                     <form className="flex flex-col justify-between gap-1.5">
                         <p className="font-medium text-sm">Rows</p>
-                        <div className="flex items-center gap-2 w-full p-4 rounded-xl border border-black/10">
-                            <span className="text-sm font-medium whitespace-nowrap">grid-rows-</span>
+                        <div className="flex items-center gap-1 w-full p-4 rounded-xl border border-black/10">
+                            <span className="text-sm font-medium whitespace-nowrap">grid - rows -</span>
                             <input
                                 className="w-full bg-transparent outline-none text-sm font-medium text-gray-800"
                                 type="number"
@@ -43,8 +43,8 @@ export default function Grid() {
                     </form>
                     <form className="flex flex-col justify-between gap-1.5">
                         <p className="font-medium text-sm">Gap</p>
-                        <div className="flex items-center gap-2 w-full p-4 rounded-xl border border-black/10">
-                            <span className="text-sm font-medium whitespace-nowrap">gap-</span>
+                        <div className="flex items-center gap-1 w-full p-4 rounded-xl border border-black/10">
+                            <span className="text-sm font-medium whitespace-nowrap">gap -</span>
                             <input
                                 className="w-full bg-transparent outline-none text-sm font-medium text-gray-800"
                                 type="number"

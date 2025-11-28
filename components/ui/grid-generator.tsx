@@ -6,24 +6,33 @@ import {
     useMemo,
     useRef,
     useState,
-    useSyncExternalStore,
     type PointerEvent,
 } from "react";
 import { MoveDiagonal2 } from "lucide-react";
 
-type GridGeneratorProps = {
-    columns: number;
-    rows: number;
-    gap?: number;
-};
-
-type GridItemData = {
+export type GridLayoutItem = {
     id: string;
     label: string;
     colSpan: number;
     rowSpan: number;
     position: { col: number; row: number };
 };
+
+export type GridLayoutSnapshot = {
+    columns: number;
+    rows: number;
+    gap: number;
+    items: GridLayoutItem[];
+};
+
+type GridGeneratorProps = {
+    columns: number;
+    rows: number;
+    gap?: number;
+    onLayoutChange?: (snapshot: GridLayoutSnapshot) => void;
+};
+
+type GridItemData = GridLayoutItem;
 
 type ResizeState = {
     id: string;
@@ -38,40 +47,6 @@ type ResizeState = {
 };
 
 type GridSnapshot = GridItemData[];
-
-type GridLayoutSnapshot = {
-    columns: number;
-    rows: number;
-    gap: number;
-    items: GridItemData[];
-    code: {
-        html: string;
-        jsx: string;
-    };
-};
-
-const layoutSubscribers = new Set<() => void>();
-let latestSnapshot: GridLayoutSnapshot = {
-    columns: 0,
-    rows: 0,
-    gap: 0,
-    items: [],
-    code: { html: "", jsx: "" },
-};
-
-const subscribeToLayout = (listener: () => void) => {
-    layoutSubscribers.add(listener);
-    return () => layoutSubscribers.delete(listener);
-};
-
-const emitLayoutSnapshot = (snapshot: GridLayoutSnapshot) => {
-    latestSnapshot = snapshot;
-    layoutSubscribers.forEach((listener) => listener());
-};
-
-export function useGridLayoutSnapshot() {
-    return useSyncExternalStore(subscribeToLayout, () => latestSnapshot);
-}
 
 const MAX_ITEMS = 12;
 
@@ -180,11 +155,24 @@ export default function GridGenerator({
     columns,
     rows,
     gap = 16,
+    onLayoutChange,
 }: GridGeneratorProps) {
-    return <GridContainer columns={columns} rows={rows} gap={gap} />;
+    return (
+        <GridContainer
+            columns={columns}
+            rows={rows}
+            gap={gap}
+            onLayoutChange={onLayoutChange}
+        />
+    );
 }
 
-function GridContainer({ columns, rows, gap = 16 }: GridGeneratorProps) {
+function GridContainer({
+    columns,
+    rows,
+    gap = 16,
+    onLayoutChange,
+}: GridGeneratorProps) {
     const totalCells = Math.max(columns * rows, 0);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [items, setItems] = useState<GridItemData[]>(() =>
@@ -442,17 +430,23 @@ function GridContainer({ columns, rows, gap = 16 }: GridGeneratorProps) {
     );
 
     useEffect(() => {
-        const sortedItems = [...items].sort(
-            (a, b) => Number(a.label) - Number(b.label),
-        );
-        emitLayoutSnapshot({
+        if (!onLayoutChange) return;
+        const normalizedItems: GridLayoutItem[] = [...items]
+            .map((item) => ({
+                id: item.id,
+                label: item.label,
+                colSpan: item.colSpan,
+                rowSpan: item.rowSpan,
+                position: { ...item.position },
+            }))
+            .sort((a, b) => Number(a.label) - Number(b.label));
+        onLayoutChange({
             columns,
             rows,
             gap,
-            items: cloneItems(sortedItems),
-            code: buildGeneratedCode(columns, rows, gap, sortedItems),
+            items: normalizedItems,
         });
-    }, [columns, rows, gap, items]);
+    }, [items, columns, rows, gap, onLayoutChange]);
 
     return (
         <div className="flex h-full w-full flex-col">
@@ -554,45 +548,4 @@ function GridItem({
         </div>
     );
 }
-
-const buildGeneratedCode = (
-    columns: number,
-    rows: number,
-    gap: number,
-    items: GridItemData[],
-) => {
-    const gapScale = Math.max(0, Math.round(gap / 4));
-    const wrapperClass = `grid grid-cols-${columns} grid-rows-${rows} gap-${gapScale}`;
-
-    const buildClasses = (item: GridItemData, jsx = false) => {
-        const classes: string[] = [];
-        if (item.colSpan > 1) classes.push(`col-span-${item.colSpan}`);
-        if (item.rowSpan > 1) classes.push(`row-span-${item.rowSpan}`);
-        if (item.position.col > 1) classes.push(`col-start-${item.position.col}`);
-        if (item.position.row > 1) classes.push(`row-start-${item.position.row}`);
-        if (!classes.length) return "";
-        return jsx
-            ? ` className="${classes.join(" ")}"`
-            : ` class="${classes.join(" ")}"`;
-    };
-
-    const htmlItems = items
-        .map(
-            (item) =>
-                `  <div${buildClasses(item)}>${Number(item.label)}</div>`,
-        )
-        .join("\n");
-
-    const jsxItems = items
-        .map(
-            (item) =>
-                `  <div${buildClasses(item, true)}>${Number(item.label)}</div>`,
-        )
-        .join("\n");
-
-    return {
-        html: `<div class="${wrapperClass}">\n${htmlItems}\n</div>`,
-        jsx: `<div className="${wrapperClass}">\n${jsxItems}\n</div>`,
-    };
-};
 
