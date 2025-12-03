@@ -50,13 +50,13 @@ export function ColorInput({ color, onChangeColor, onRefresh, enablePicker = fal
   };
 
   return (
-    <div className="flex items-center gap-3 h-[52px] border border-black/10 rounded-xl px-4 py-4 w-full max-w-sm bg-white relative">
+    <div className="flex items-center gap-3 h-[52px] border border-[var(--border-color)] rounded-xl px-4 py-4 w-full max-w-sm bg-[var(--bg-secondary)] relative">
       <div className="relative">
         <button
           ref={buttonRef}
           type="button"
           onClick={() => enablePicker && setIsPickerOpen(!isPickerOpen)}
-          className="relative w-[34px] h-[24px] rounded-[8px] border border-black/10 bg-white cursor-pointer"
+          className="relative w-[34px] h-[24px] rounded-[8px] border border-[var(--border-color)] cursor-pointer"
           style={{ backgroundColor: previewColor }}
           aria-label={enablePicker ? "Open color picker" : "Edit base color"}
         >
@@ -91,12 +91,12 @@ export function ColorInput({ color, onChangeColor, onRefresh, enablePicker = fal
           const next = normalizeHex(e.target.value);
           onChangeColor(next ?? e.target.value.toUpperCase());
         }}
-        className="w-full bg-transparent outline-none text-sm font-medium text-gray-800"
+        className="w-full bg-transparent outline-none text-sm font-medium text-[var(--text-primary)] placeholder:text-[var(--text-disabled)]"
       />
       <button
         type="button"
         onClick={onRefresh}
-        className="p-1 rounded-lg hover:bg-gray-100 text-gray-600 transition"
+        className="p-1 rounded-lg hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] transition"
       >
         <RefreshCcw size={18} />
       </button>

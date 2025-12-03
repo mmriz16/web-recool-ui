@@ -475,7 +475,7 @@ function GridContainer({
                             gridColumn: `${col} / span 1`,
                             gridRow: `${row} / span 1`,
                         }}
-                        className="flex items-center justify-center rounded-2xl bg-[#f7f7f7] text-lg text-black/40 transition hover:text-black/70 disabled:opacity-30"
+                        className="flex items-center justify-center rounded-2xl bg-[var(--bg-tertiary)] text-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:opacity-30"
                     >
                         +
                     </button>
@@ -523,14 +523,14 @@ function GridItem({
                     onRemove(item.id);
                 }
             }}
-            className={`group relative flex flex-col items-center justify-center rounded-2xl border border-[#C9C1FF] bg-[#E4E0FF] text-[#1C1AEF] transition ${colSpanClass} ${rowSpanClass}`}
+            className={`group relative flex flex-col items-center justify-center rounded-2xl border border-[var(--bg-grid-stroke)]/10 bg-[var(--bg-grid-item)] text-[var(--bg-grid-stroke)] ${colSpanClass} ${rowSpanClass}`}
             style={{
                 gridColumn: `${item.position.col} / span ${item.colSpan}`,
                 gridRow: `${item.position.row} / span ${item.rowSpan}`,
             }}
         >
             <span className="text-xl font-semibold">{item.label}</span>
-            <span className="text-[11px] text-[#1C1AEF]/70">
+            <span className="text-[11px] text-[var(--bg-grid-stroke)]">
                 {COL_SPAN_CLASSES[item.colSpan]} · {ROW_SPAN_CLASSES[item.rowSpan]}
             </span>
             <button
@@ -540,10 +540,10 @@ function GridItem({
                 onPointerMove={(event) => onResizeMove(event, item)}
                 onPointerUp={(event) => onResizeEnd(event, item)}
                 onPointerCancel={(event) => onResizeEnd(event, item)}
-                className="absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center rounded-lg border border-black/10 bg-white text-black/60 cursor-nwse-resize"
+                className="absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center rounded-lg border border-black/10 bg-[var(--bg-secondary)] text-black/60 cursor-nwse-resize"
                 aria-label="Resize grid item"
             >
-                <MoveDiagonal2 className="h-3.5 w-3.5 rotate-180" />
+                <MoveDiagonal2 className="h-3.5 w-3.5 rotate-180 text-[var(--text-secondary)]" />
             </button>
         </div>
     );

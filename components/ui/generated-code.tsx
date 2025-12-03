@@ -30,14 +30,14 @@ export default function GeneratedCode({ code }: GeneratedCodeProps) {
     return (
         <div className="flex h-full w-full flex-col gap-3">
             <div className="flex items-center justify-between">
-                <div className="flex items-center rounded-[16px] bg-black/5 p-[2px] text-sm font-medium">
+                <div className="flex items-center rounded-[16px] bg-[var(--bg-tertiary)] p-[2px] text-sm font-medium">
                     <button
                         type="button"
                         onClick={() => setFormat("html")}
                         className={`rounded-[14px] px-4 py-2 transition ${
                             format === "html"
-                                ? "bg-white text-black"
-                                : "text-black/50"
+                                ? "bg-[var(--bg-secondary)] text-[var(--text-primary)]"
+                                : "text-[var(--text-secondary)]"
                         }`}
                     >
                         HTML
@@ -47,8 +47,8 @@ export default function GeneratedCode({ code }: GeneratedCodeProps) {
                         onClick={() => setFormat("jsx")}
                         className={`rounded-[14px] px-4 py-2 transition ${
                             format === "jsx"
-                                ? "bg-white text-black"
-                                : "text-black/50"
+                                ? "bg-[var(--bg-secondary)] text-[var(--text-primary)]"
+                                : "text-[var(--text-secondary)]"
                         }`}
                     >
                         JSX
@@ -58,7 +58,7 @@ export default function GeneratedCode({ code }: GeneratedCodeProps) {
                     type="button"
                     onClick={handleCopy}
                     disabled={!displayCode}
-                    className="rounded-xl border border-black/10 bg-white px-4 py-2 text-sm font-medium text-black transition hover:border-black/30 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="rounded-xl border border-black/10 bg-[var(--bg-secondary)] px-4 py-2 text-sm font-medium text-[var(--text-primary)] transition hover:border-black/30 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                     Copy
                 </button>

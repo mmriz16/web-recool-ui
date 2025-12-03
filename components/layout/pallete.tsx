@@ -11,7 +11,12 @@ export default function Pallete() {
     const [openContrastGrid, setOpenContrastGrid] = useState(false);
     const [openExportCode, setOpenExportCode] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
-    const { baseHex, hueShift, saturationBoost } = usePaletteContext();
+    const { baseHex, hueShift, saturationBoost, palettes, selectedPaletteId } = usePaletteContext();
+    
+    const selectedPalette = useMemo(
+        () => palettes.find((p) => p.id === selectedPaletteId),
+        [palettes, selectedPaletteId]
+    );
 
     const palette = useMemo(
         () => generatePalette(baseHex, hueShift, saturationBoost),
@@ -28,9 +33,11 @@ export default function Pallete() {
         <div className="flex flex-col space-y-4 h-full justify-between">
             <div className="flex flex-row justify-between items-center">
                 <div className="flex items-center justify-between text-base">
-                    <h1 className="font-bold text-xl">Electrict Violet</h1>
+                    <h1 className="font-bold text-xl">
+                        {selectedPalette?.name || "Electrict Violet"}
+                    </h1>
                 </div>
-                <div className="flex gap-5 items-center bg-white p-[2px] rounded-2xl w-fit">
+                <div className="flex gap-5 items-center justify-end p-[2px] rounded-2xl w-fit">
                     <button type="button" onClick={() => setOpenContrastGrid(true)} className="cursor-pointer">Contrast Grid</button>
                     <button type="button" onClick={() => setOpenExportCode(true)} className="cursor-pointer">Export Code</button>
                     <button type="button" onClick={() => setOpenEdit(true)} className="cursor-pointer">Edit</button>

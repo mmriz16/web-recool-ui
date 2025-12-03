@@ -24,8 +24,8 @@ export function Slider({
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-medium">{label}</span>
-        <span className="text-sm text-gray-500">{value}</span>
+        <span className="text-sm font-medium text-[var(--text-primary)]">{label}</span>
+        <span className="text-sm text-[var(--text-tertiary)]">{value}</span>
       </div>
 
       <input
@@ -35,7 +35,7 @@ export function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="slider "
+        className="slider"
         style={
           {
             "--value": `${((value - min) / (max - min)) * 100}%`,

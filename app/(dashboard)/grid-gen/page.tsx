@@ -14,6 +14,7 @@ import GridGenerator, {
 } from "@/components/ui/grid-generator";
 import GeneratedCode from "@/components/ui/generated-code";
 import Guide from "@/components/ui/guide";
+import Navtab from "@/components/ui/navtab";
 
 export default function GridGen() {
     return (
@@ -59,64 +60,41 @@ function GridContent() {
                             </p>
                         </div>
                         <div className="flex flex-row gap-2">
-                            <div className="flex bg-white p-[2px] rounded-2xl w-fit">
-                                <button
-                                    className={`px-4 py-3.5 rounded-[14px] font-medium transition ${
-                                        activeTab === "editor"
-                                            ? "bg-[#f7f7f7] text-black"
-                                            : "text-gray-500 hover:text-black"
-                                    }`}
-                                    onClick={() => setActiveTab("editor")}
-                                >
-                                    Editor
-                                </button>
-                                <button
-                                    className={`px-4 py-3.5 rounded-[14px] font-medium transition ${
-                                        activeTab === "code"
-                                            ? "bg-[#f7f7f7] text-black"
-                                            : "text-gray-500 hover:text-black"
-                                    }`}
-                                    onClick={() => setActiveTab("code")}
-                                >
-                                    Generated Code
-                                </button>
-                                <button
-                                    className={`px-4 py-3.5 rounded-[14px] font-medium transition ${
-                                        activeTab === "guide"
-                                            ? "bg-[#f7f7f7] text-black"
-                                            : "text-gray-500 hover:text-black"
-                                    }`}
-                                    onClick={() => setActiveTab("guide")}
-                                >
-                                    Guide
-                                </button>
-                            </div>
+                            <Navtab
+                                tabs={[
+                                    { label: "Editor", value: "editor" },
+                                    { label: "Generated Code", value: "code" },
+                                    { label: "Guide", value: "guide" }
+                                ]}
+                                value={activeTab}
+                                onChange={(value) => setActiveTab(value as TabKey)}
+                            />
                             <button
-                                className="px-4 py-3.5 rounded-xl bg-white font-medium text-black cursor-pointer"
+                                className="px-4 py-3.5 rounded-xl bg-[var(--bg-tertiary)] font-medium text-[var(--text-primary)] cursor-pointer"
                                 title="Reset Grid"
                                 onClick={reset}
                             >
-                                <RefreshCw size={20} className="text-black" />
+                                <RefreshCw size={20} className="text-[var(--text-secondary)]" />
                             </button>
                         </div>
                     </div>
                     <div className="w-full h-full">
                         <section className={`${activeTab === "editor" ? "block" : "hidden"} h-full`}>
-                            <Card>
+                            <Card className="h-full">
                                 <GridCanvas onLayoutChange={handleLayoutChange} />
                             </Card>
                         </section>
                         <section className={`${activeTab === "code" ? "block" : "hidden"} h-full`}>
-                            <Card>
+                            <Card className="h-full">
                                 <GeneratedCode code={generatedCode} />
                             </Card>
                         </section>
                         <section className={`${activeTab === "guide" ? "block" : "hidden"} h-full`}>
-                    <Card>
+                            <Card className="h-full">
                                 <Guide />
                             </Card>
                         </section>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>

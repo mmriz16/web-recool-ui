@@ -22,12 +22,12 @@ export default function Modal({ open, onClose, children }: ModalProps) {
       {/* overlay */}
       <div
         onClick={onClose}
-        className="absolute inset-0 bg-black/10 backdrop-blur-xs"
+        className="absolute inset-0 bg-[var(--text-primary)]/5 backdrop-blur-xs"
       />
 
       {/* modal box */}
       <div
-        className={`relative bg-white rounded-2xl p-6 w-[976px] max-w-[90%] transition 
+        className={`relative bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-2xl p-6 w-[976px] max-w-[90%] transition 
           ${open ? "scale-100" : "scale-95"}`}
       >
         {children}
