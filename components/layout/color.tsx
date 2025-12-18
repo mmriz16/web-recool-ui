@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Slider } from "../ui/slider";
 import { ColorInput } from "../ui/color-input";
 import { usePaletteContext } from "../context/palette-context";
+import { Trash2 } from "lucide-react";
 
 export default function Color() {
     const {
@@ -13,18 +14,20 @@ export default function Color() {
         setHueShift,
         saturationBoost,
         setSaturationBoost,
+        colorName,
+        setColorName,
         palettes,
         selectedPaletteId,
         addPalette,
         selectPalette,
+        deletePalette,
     } = usePaletteContext();
 
     const [inputHex, setInputHex] = useState(baseHex);
     const [localHue, setLocalHue] = useState(hueShift);
     const [localSaturation, setLocalSaturation] = useState(saturationBoost);
-    const [colorName, setColorName] = useState("");
-    const [description, setDescription] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
+    const [duplicateAlert, setDuplicateAlert] = useState(false);
 
     const generateColorName = useCallback(async (hex: string) => {
         if (!hex || hex === "#" || !/^#([0-9A-F]{3}|[0-9A-F]{6})$/i.test(hex)) {
@@ -44,7 +47,6 @@ export default function Color() {
             if (response.ok) {
                 const data = await response.json();
                 setColorName(data.name || "");
-                setDescription(data.description || "");
             } else {
                 console.error("Failed to generate color name");
             }
@@ -117,7 +119,6 @@ export default function Color() {
             if (palette) {
                 setInputHex(palette.hex);
                 setColorName(palette.name);
-                setDescription(palette.description);
                 setLocalHue(palette.hueShift);
                 setLocalSaturation(palette.saturationBoost);
             }
@@ -129,9 +130,19 @@ export default function Color() {
             return;
         }
 
+        // Check for duplicate color
+        const isDuplicate = palettes.some(
+            (palette) => palette.hex.toUpperCase() === inputHex.toUpperCase()
+        );
+
+        if (isDuplicate) {
+            setDuplicateAlert(true);
+            setTimeout(() => setDuplicateAlert(false), 3000);
+            return;
+        }
+
         addPalette({
             name: colorName || "Unnamed Color",
-            description: description || "A beautiful color for your design.",
             hex: inputHex.toUpperCase(),
             hueShift: localHue,
             saturationBoost: localSaturation,
@@ -139,13 +150,17 @@ export default function Color() {
 
         // Reset form
         setColorName("");
-        setDescription("");
+    };
+
+    const handleDeletePalette = (e: React.MouseEvent, id: string) => {
+        e.stopPropagation(); // Prevent selecting the palette when clicking delete
+        deletePalette(id);
     };
 
     return (
-        <div className="flex flex-col space-y-6 h-full justify-between">
-            <div className="flex flex-col space-y-4 items-center justify-between text-base">
-                <div className="flex flex-row gap-2 items-center justify-between w-full">
+        <div className="flex flex-col h-full overflow-hidden">
+            <div className="flex flex-col flex-1 min-h-0 space-y-4 overflow-hidden self-stretch">
+                <div className="flex flex-row gap-2 items-center justify-between w-full shrink-0">
                     <h1 className="font-medium uppercase text-[var(--text-primary)]">Palletes</h1>
                     <button
                         type="button"
@@ -156,25 +171,28 @@ export default function Color() {
                         Add
                     </button>
                 </div>
-                <div className="flex flex-col gap-2.5 items-center justify-between w-full max-h-[300px] overflow-y-auto scrollbar-hide">
+                {duplicateAlert && (
+                    <div className="bg-red-500/10 border border-red-500/30 text-red-500 text-sm px-4 py-3 rounded-xl">
+                        This color already exists in your palette!
+                    </div>
+                )}
+                <div className="flex flex-col gap-2 items-center w-full max-h-[calc(100vh-590px)] overflow-y-auto scrollbar-hide">
                     {palettes.length === 0 ? (
                         <p className="text-sm text-[var(--text-tertiary)] text-center py-4">
                             No palettes yet. Add your first color!
                         </p>
                     ) : (
-                        palettes.map((palette) => (
-                            <button
+                        [...palettes].reverse().map((palette) => (
+                            <div
                                 key={palette.id}
-                                type="button"
+                                className={`flex flex-row gap-2.5 items-center px-4 py-3.5 rounded-xl border w-full transition-all shrink-0 cursor-pointer ${selectedPaletteId === palette.id
+                                    ? "border-[var(--primary-blue)] bg-[var(--bg-tertiary)]"
+                                    : "border-[var(--border-color)] hover:border-[var(--primary-blue)]/50"
+                                    }`}
                                 onClick={() => selectPalette(palette.id)}
-                                className={`flex flex-row gap-2.5 items-center px-4 py-3.5 rounded-xl border w-full transition-all ${
-                                    selectedPaletteId === palette.id
-                                        ? "border-[var(--primary-blue)] bg-[var(--bg-tertiary)]"
-                                        : "border-[var(--border-color)] hover:border-[var(--primary-blue)]/50"
-                                }`}
                             >
                                 <div
-                                    className="w-11 h-11 rounded-xl"
+                                    className="w-11 h-11 rounded-xl shrink-0"
                                     style={{ backgroundColor: palette.hex }}
                                 />
                                 <div className="flex flex-col gap-1 flex-1 text-left">
@@ -185,14 +203,22 @@ export default function Color() {
                                         {palette.hex}
                                     </p>
                                 </div>
-                            </button>
+                                <button
+                                    type="button"
+                                    onClick={(e) => handleDeletePalette(e, palette.id)}
+                                    className="p-2 rounded-lg hover:bg-red-500/10 text-[var(--text-tertiary)] hover:text-red-500 transition-colors"
+                                    title="Delete palette"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            </div>
                         ))
                     )}
                 </div>
             </div>
-            <div className="flex flex-col space-y-6">
+            <div className="flex flex-col space-y-4 shrink-0">
                 <div className="flex flex-col space-y-2.5 font-medium text-sm">
-                    <h1 className="font-medium uppercase text-base text-[var(--text-primary)]">Base Color</h1>
+                    <h1 className="font-medium uppercase text-base text-[var(--text-primary)]">Color</h1>
                     <form className="flex flex-col justify-between gap-1.5">
                         <p className="text-[var(--text-primary)]">Color Name</p>
                         <div className="relative">
@@ -210,17 +236,6 @@ export default function Color() {
                                 </div>
                             )}
                         </div>
-                    </form>
-                    <form className="flex flex-col justify-between gap-1.5">
-                        <p className="text-[var(--text-primary)]">Description</p>
-                        <textarea
-                            className="scrollbar-hide w-full p-4 rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-primary)] placeholder:text-[var(--text-disabled)] active:outline-none focus:outline-none font-normal resize-none overflow-y-auto"
-                            rows={2}
-                            placeholder={isGenerating ? "Generating..." : "e.g. used for primary actions and high-priority elements"}
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            disabled={isGenerating}
-                        />
                     </form>
                     <form className="flex flex-col justify-between gap-1.5">
                         <p className="text-[var(--text-primary)]">Base Color</p>

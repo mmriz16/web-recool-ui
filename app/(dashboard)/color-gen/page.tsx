@@ -17,14 +17,13 @@ export default function ColorGen() {
                             <h1 className="font-bold text-2xl">Pallete Generator</h1>
                             <p className="text-sm text-foreground/50">Generate a pallete of colors based on a base color.</p>
                         </div>
-                        <Navtab 
-                        tabs={[
-                            { label: "Editor", value: "editor" },
-                            { label: "Documentation", value: "documentation" },
-                            { label: "Preview", value: "preview" }
-                        ]}
-                        defaultValue="editor"
-                    />
+                        <Navtab
+                            tabs={[
+                                { label: "Editor", value: "editor" },
+                                { label: "Documentation", value: "documentation" },
+                            ]}
+                            defaultValue="editor"
+                        />
                     </div>
                     <Card>
                         <div className="flex flex-col space-y-6">

@@ -23,15 +23,56 @@ export async function POST(request: NextRequest) {
             messages: [
                 {
                     role: "system",
-                    content: "You are a color naming expert. Given a hex color code, provide a creative and descriptive color name and a brief description of its usage. Respond in JSON format with 'name' and 'description' fields. The name should be creative, memorable, and reflect the color's appearance. The description should be one sentence about when to use this color in UI design.",
+                    content: `You are a professional color naming expert for digital products and design systems.
+
+                Your task is to create a UNIQUE, BRAND-READY color name that:
+                - MUST be EXACTLY 2 words (Adjective + Noun pattern)
+                - Is NEVER generic or literal (no "Light Blue", "Dark Red", etc.)
+                - Uses NO direct color words (blue, red, green, purple, cyan, navy, emerald, violet, pink, orange, yellow, etc.)
+                - Feels suitable for a modern UI / design system
+                - Is evocative, elegant, and memorable
+                - Matches the emotional and visual characteristics of the color
+
+                Good examples (Adjective + Noun pattern):
+                - "Midnight Velvet" (for deep dark blue)
+                - "Arctic Frost" (for icy light blue)
+                - "Solar Flare" (for vibrant orange)
+                - "Rosewood Dusk" (for muted pink-brown)
+                - "Electric Surge" (for bright neon)
+                - "Forest Whisper" (for muted green)
+                - "Coral Sunset" (for warm orange-pink)
+                - "Storm Cloud" (for dark gray-blue)
+                - "Honey Glow" (for warm yellow)
+                - "Lavender Mist" (for soft purple)
+                - "Cherry Blossom" (for soft pink)
+                - "Ocean Depth" (for deep teal)
+
+                The name MUST reflect:
+                - Lightness (light / soft / airy vs deep / dark / dense)
+                - Temperature (warm vs cool)
+                - Saturation (vibrant / muted / neutral)
+                - Mood (calm, bold, mystical, elegant, playful, energetic, etc.)
+
+                Avoid:
+                - Single words
+                - Technical terms or codes
+                - Obvious color synonyms
+                - Overly fantasy or RPG-style names
+                - Generic combinations like "Pretty Color" or "Nice Shade"
+
+                Respond ONLY with valid JSON:
+                {
+                "name": string,
+                "description": string
+}`,
                 },
                 {
                     role: "user",
-                    content: `Generate a color name and description for hex color ${hex} (RGB: ${rgb.r}, ${rgb.g}, ${rgb.b}). Return only valid JSON with "name" and "description" fields.`,
+                    content: `Create a unique 2-word brand-ready name for hex color ${hex} (RGB: ${rgb.r}, ${rgb.g}, ${rgb.b}). The name should follow the Adjective + Noun pattern.`,
                 },
             ],
             model: "llama-3.1-8b-instant",
-            temperature: 0.7,
+            temperature: 0.85,
             max_tokens: 150,
             response_format: { type: "json_object" },
         });
@@ -45,7 +86,6 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({
             name: colorInfo.name || "Unnamed Color",
-            description: colorInfo.description || "A beautiful color for your design.",
         });
     } catch (error) {
         console.error("Error generating color name:", error);
@@ -70,5 +110,6 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } {
         b: parseInt(sanitized.slice(4, 6), 16),
     };
 }
+
 
 

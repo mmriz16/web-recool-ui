@@ -11,7 +11,7 @@
   --bg-alert-danger-bg: rgba(254, 46, 46, 0.10);
   --bg-alert-warning: #FEF9F3;
   --bg-alert-warning-bg: rgba(232, 155, 17, 0.10);
-  
+
   --bg-grid-item: #E8E8FF;
   --bg-grid-stroke: #191DFA;
 
@@ -85,13 +85,11 @@
 @layer components {
   .slider {
     @apply w-full h-5 rounded-full appearance-none cursor-pointer;
-    background: linear-gradient(
-      to right,
-      var(--color) 0%,
-      var(--color) var(--value),
-      var(--bg-tertiary) var(--value),
-      var(--bg-tertiary) 100%
-    );
+    background: linear-gradient(to right,
+        var(--color) 0%,
+        var(--color) var(--value),
+        var(--bg-tertiary) var(--value),
+        var(--bg-tertiary) 100%);
   }
 
   .slider::-webkit-slider-runnable-track {
@@ -136,10 +134,13 @@ body {
 
 /* Hide scrollbar but keep scroll functionality */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari and Opera */
+  display: none;
+  /* Chrome, Safari and Opera */
 }

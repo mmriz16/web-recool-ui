@@ -11,7 +11,6 @@ import {
 type ColorPalette = {
     id: string;
     name: string;
-    description: string;
     hex: string;
     hueShift: number;
     saturationBoost: number;
@@ -21,11 +20,13 @@ type PaletteContextValue = {
     baseHex: string;
     hueShift: number;
     saturationBoost: number;
+    colorName: string;
     selectedPaletteId: string | null;
     palettes: ColorPalette[];
     setBaseHex: (value: string) => void;
     setHueShift: (value: number) => void;
     setSaturationBoost: (value: number) => void;
+    setColorName: (value: string) => void;
     addPalette: (palette: Omit<ColorPalette, "id">) => void;
     selectPalette: (id: string) => void;
     deletePalette: (id: string) => void;
@@ -46,6 +47,7 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
         useState<number>(DEFAULT_SHIFT);
     const [palettes, setPalettes] = useState<ColorPalette[]>([]);
     const [selectedPaletteId, setSelectedPaletteId] = useState<string | null>(null);
+    const [colorName, setColorName] = useState<string>("");
 
     const setBaseHex = (value: string) => {
         const normalized = normalizeHex(value);
@@ -91,6 +93,7 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
             baseHex,
             hueShift,
             saturationBoost,
+            colorName,
             selectedPaletteId,
             palettes,
             setBaseHex,
@@ -98,11 +101,12 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
                 setHueShiftState(clamp(Math.round(val), 0, 100)),
             setSaturationBoost: (val: number) =>
                 setSaturationBoostState(clamp(Math.round(val), 0, 100)),
+            setColorName,
             addPalette,
             selectPalette,
             deletePalette,
         }),
-        [baseHex, hueShift, saturationBoost, selectedPaletteId, palettes],
+        [baseHex, hueShift, saturationBoost, colorName, selectedPaletteId, palettes],
     );
 
     return (

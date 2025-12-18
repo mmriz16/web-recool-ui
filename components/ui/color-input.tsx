@@ -50,13 +50,13 @@ export function ColorInput({ color, onChangeColor, onRefresh, enablePicker = fal
   };
 
   return (
-    <div className="flex items-center gap-3 h-[52px] border border-[var(--border-color)] rounded-xl px-4 py-4 w-full max-w-sm bg-[var(--bg-secondary)] relative">
-      <div className="relative">
+    <div className="flex items-center gap-2 h-[54px] border border-[var(--border-color)] rounded-xl px-4 py-4 w-full max-w-sm bg-[var(--bg-secondary)]">
+      <div className="relative flex items-center">
         <button
           ref={buttonRef}
           type="button"
           onClick={() => enablePicker && setIsPickerOpen(!isPickerOpen)}
-          className="relative w-[34px] h-[24px] rounded-[8px] border border-[var(--border-color)] cursor-pointer"
+          className="w-[24px] h-[24px] rounded-[8px] border border-[var(--border-color)] cursor-pointer"
           style={{ backgroundColor: previewColor }}
           aria-label={enablePicker ? "Open color picker" : "Edit base color"}
         >
@@ -71,8 +71,8 @@ export function ColorInput({ color, onChangeColor, onRefresh, enablePicker = fal
         {enablePicker && isPickerOpen && (
           <div
             ref={pickerRef}
-            className="absolute top-full left-0 mt-2 z-50"
-            style={{ borderRadius: "16px", overflow: "hidden" }}
+            className="absolute bottom-full left-0 z-50 border mb-2 border-[var(--border-color)]"
+            style={{ borderRadius: "12px", overflow: "hidden" }}
           >
             <ChromePicker
               color={previewColor}
